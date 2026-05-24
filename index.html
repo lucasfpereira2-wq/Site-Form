@@ -51,12 +51,12 @@
 
     <div id="app" class="w-full max-w-2xl px-4 py-12">
         <div id="start-screen" class="text-center space-y-8">
-            <h1 class="text-4xl md:text-6xl font-bold tracking-tight">Sua clínica está deixando <span class="text-brand-primary">dinheiro na mesa?</span></h1>
-            <p class="text-brand-muted text-lg md:text-xl max-w-lg mx-auto">Responda a 6 perguntas estratégicas e descubra o nível de maturidade financeira da sua operação.</p>
+            <h1 class="text-4xl md:text-6xl font-bold tracking-tight">Sua clínica pode estar perdendo lucro <span class="text-brand-primary">todos os meses sem perceber.</span></h1>
+            <p class="text-brand-muted text-lg md:text-xl max-w-lg mx-auto">Responda 6 perguntas estratégicas e descubra o nível de maturidade financeira da sua operação.</p>
             
             <div class="space-y-6 pt-4">
                 <button onclick="startQuiz()" class="btn-float inline-block bg-brand-primary hover:bg-blue-600 text-white px-10 py-5 rounded-xl font-bold text-lg transition-all animate-float shadow-[0_0_20px_rgba(0,102,255,0.4)]">
-                    Iniciar Diagnóstico Agora
+                    QUERO MEU DIAGNÓSTICO
                 </button>
             </div>
         </div>
@@ -77,7 +77,7 @@
             <div id="findings" class="space-y-3 py-4"></div>
             <div class="pt-8 border-t border-white/10">
                 <a id="whatsapp-link" href="#" target="_blank" class="block text-center bg-gradient-to-r from-brand-primary to-brand-secondary hover:brightness-110 text-white py-4 rounded-xl font-bold text-lg transition-all shadow-lg">
-                    QUERO RESOLVER MEUS PROBLEMAS E CRESCER
+                    QUERO UMA ANÁLISE ESTRATÉGICA
                 </a>
             </div>
         </div>
@@ -85,12 +85,12 @@
 
     <script>
         const questions = [
-            { q: "Você sabe qual procedimento tem a maior margem real?", options: [{t:"Sim, preciso", s:3}, {t:"Ideia aproximada", s:1}, {t:"Nunca calculei", s:0}] },
+            { q: "Você sabe exatamente quais procedimentos realmente dão lucro?", options: [{t:"Sim, acompanho meus números", s:3}, {t:"Tenho uma noção", s:1}, {t:"Não tenho clareza", s:0}] },
             { q: "De cada 10 clientes novas, quantas voltam em 90 dias?", options: [{t:"7 ou mais", s:3}, {t:"4 a 6", s:1}, {t:"Menos de 4", s:0}, {t:"Nunca acompanhei", s:0}] },
-            { q: "Você sabe de onde vieram suas 5 melhores clientes?", options: [{t:"Sei exatamente", s:3}, {t:"Sei algumas", s:1}, {t:"Não tenho esses dados", s:0}] },
-            { q: "Como você define o preço dos procedimentos?", options: [{t:"Custo + Margem", s:3}, {t:"Concorrência", s:1}, {t:"Feeling/Intuição", s:0}] },
-            { q: "Consegue prever o faturamento do próximo mês?", options: [{t:"Sim, com precisão", s:3}, {t:"Estimativa vaga", s:1}, {t:"Surpresa todo mês", s:0}] },
-            { q: "Se precisasse crescer 20% em 60 dias, saberia o que fazer?", options: [{t:"Plano claro", s:3}, {t:"Algumas ideias", s:1}, {t:"Tentativa e erro", s:0}] }
+            { q: "Você consegue identificar quais canais trazem os pacientes mais lucrativos?", options: [{t:"Sim, acompanho isso", s:3}, {t:"Parcialmente", s:1}, {t:"Não tenho esses dados", s:0}] },
+            { q: "Hoje, como sua clínica define preços?", options: [{t:"Baseado em custos e margem", s:3}, {t:"Baseado na concorrência", s:1}, {t:"Mais por percepção/intuição", s:0}] },
+            { q: "Sua clínica acompanha CAC (custo por paciente adquirido)?", options: [{t:"Sim, com precisão", s:3}, {t:"Já ouvi falar", s:1}, {t:"Não acompanho", s:0}] },
+            { q: "Se seu faturamento caísse 20% amanhã, você saberia exatamente onde agir primeiro?", options: [{t:"Plano claro", s:3}, {t:"Talvez", s:1}, {t:"Não", s:0}] }
         ];
 
         let currentQ = 0, score = 0;
@@ -126,7 +126,7 @@
             document.getElementById('quiz-container').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
             const percent = (score / 18) * 100;
-            let res = percent <= 33 ? {t:"Gestão no Escuro", d:"Sua operação precisa de estruturação urgente para não queimar caixa.", f:["Falta de clareza", "Margens invisíveis"]} : (percent <= 66 ? {t:"Em Desenvolvimento", d:"Você já tem bases, mas falta inteligência de dados para escalar.", f:["Otimização necessária", "Retenção abaixo do potencial"]} : {t:"Gestão Avançada", d:"Excelente maturidade. O próximo passo é foco total em escala e ROI.", f:["Operação robusta", "Alta previsibilidade"]});
+            let res = percent <= 33 ? {t:"Gestão no Escuro", d:"Hoje existem sinais claros de perda de margem, falta de previsibilidade e decisões sendo tomadas sem dados confiáveis.", f:["Baixa previsibilidade financeira", "Lucro abaixo do potencial real"]} : (percent <= 66 ? {t:"Em Desenvolvimento", d:"Você já possui alguns indicadores importantes, mas ainda existem oportunidades claras para aumentar margem, previsibilidade e eficiência operacional.", f:["Otimização necessária", "Retenção abaixo do potencial"]} : {t:"Gestão Avançada", d:"Sua clínica demonstra maturidade de gestão, mas clínicas com esse perfil normalmente conseguem crescer ainda mais quando refinam aquisição, margem e retenção com inteligência de dados.", f:["Operação robusta", "Alta previsibilidade"]});
             
             document.getElementById('result-title').innerText = res.t;
             document.getElementById('result-desc').innerText = res.d;
