@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucas Analytics | Estratégia Orientada por Dados</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#0f111a',
+                            card: '#1b1f3b',
+                            primary: '#0066ff',
+                            secondary: '#00c3ff',
+                            accent: '#4d94ff',
+                            text: '#f8fafc',
+                            muted: '#94a3b8'
+                        }
+                    },
+                    animation: {
+                        'float': 'float 4s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0f111a; color: #f8fafc; font-family: sans-serif; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center">
+
+    <header class="w-full py-6 px-4 flex justify-center border-b border-white/5 bg-brand-dark/50 backdrop-blur-md sticky top-0 z-50">
+        <div class="flex items-center gap-3">
+            <svg viewBox="0 0 100 100" class="w-9 h-9 drop-shadow-md" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 15 10 V 85 H 85 V 60 H 40 V 10 Z" fill="#f2efeb" />
+                <path d="M 45 55 H 85 V 20 Z" fill="#597491" />
+            </svg>
+            <span class="font-bold text-xl tracking-tight text-brand-text">Lucas<span class="text-brand-muted font-medium">Analytics</span></span>
+        </div>
+    </header>
+
+    <div id="app" class="w-full max-w-2xl px-4 py-12">
+        <div id="start-screen" class="text-center space-y-8">
+            <h1 class="text-4xl md:text-6xl font-bold tracking-tight">Sua clínica está deixando <span class="text-brand-primary">dinheiro na mesa?</span></h1>
+            <p class="text-brand-muted text-lg md:text-xl max-w-lg mx-auto">Responda a 6 perguntas estratégicas e descubra o nível de maturidade financeira da sua operação.</p>
+            
+            <div class="space-y-6 pt-4">
+                <button onclick="startQuiz()" class="btn-float inline-block bg-brand-primary hover:bg-blue-600 text-white px-10 py-5 rounded-xl font-bold text-lg transition-all animate-float shadow-[0_0_20px_rgba(0,102,255,0.4)]">
+                    Iniciar Diagnóstico Agora
+                </button>
+            </div>
+        </div>
+
+        <div id="quiz-container" class="hidden">
+            <div class="w-full h-1.5 bg-brand-card rounded-full mb-10 overflow-hidden">
+                <div id="progress-fill" class="h-full bg-brand-primary transition-all duration-500" style="width: 0%"></div>
+            </div>
+            <div class="bg-brand-card p-8 md:p-10 rounded-3xl border border-white/10 shadow-2xl">
+                <h2 id="question-text" class="text-2xl md:text-3xl font-semibold mb-8 leading-snug"></h2>
+                <div id="options-container" class="space-y-4"></div>
+            </div>
+        </div>
+
+        <div id="result-screen" class="hidden bg-brand-card p-8 md:p-10 rounded-3xl border border-white/10 shadow-2xl space-y-6">
+            <h2 id="result-title" class="text-3xl font-bold"></h2>
+            <p id="result-desc" class="text-brand-muted"></p>
+            <div id="findings" class="space-y-3 py-4"></div>
+            <div class="pt-8 border-t border-white/10">
+                <a id="whatsapp-link" href="#" target="_blank" class="block text-center bg-gradient-to-r from-brand-primary to-brand-secondary hover:brightness-110 text-white py-4 rounded-xl font-bold text-lg transition-all shadow-lg">
+                    QUERO RESOLVER MEUS PROBLEMAS E CRESCER
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { q: "Você sabe qual procedimento tem a maior margem real?", options: [{t:"Sim, preciso", s:3}, {t:"Ideia aproximada", s:1}, {t:"Nunca calculei", s:0}] },
+            { q: "De cada 10 clientes novas, quantas voltam em 90 dias?", options: [{t:"7 ou mais", s:3}, {t:"4 a 6", s:1}, {t:"Menos de 4", s:0}, {t:"Nunca acompanhei", s:0}] },
+            { q: "Você sabe de onde vieram suas 5 melhores clientes?", options: [{t:"Sei exatamente", s:3}, {t:"Sei algumas", s:1}, {t:"Não tenho esses dados", s:0}] },
+            { q: "Como você define o preço dos procedimentos?", options: [{t:"Custo + Margem", s:3}, {t:"Concorrência", s:1}, {t:"Feeling/Intuição", s:0}] },
+            { q: "Consegue prever o faturamento do próximo mês?", options: [{t:"Sim, com precisão", s:3}, {t:"Estimativa vaga", s:1}, {t:"Surpresa todo mês", s:0}] },
+            { q: "Se precisasse crescer 20% em 60 dias, saberia o que fazer?", options: [{t:"Plano claro", s:3}, {t:"Algumas ideias", s:1}, {t:"Tentativa e erro", s:0}] }
+        ];
+
+        let currentQ = 0, score = 0;
+        let userAnswers = [];
+
+        function startQuiz() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('quiz-container').classList.remove('hidden');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = questions[currentQ];
+            document.getElementById('question-text').innerText = q.q;
+            document.getElementById('progress-fill').style.width = `${(currentQ/questions.length)*100}%`;
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            q.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full text-left p-5 rounded-xl bg-brand-dark hover:bg-brand-primary/20 border border-white/5 transition-all text-lg';
+                btn.innerText = opt.t;
+                btn.onclick = () => { 
+                    score += opt.s; 
+                    userAnswers.push(`${q.q}: ${opt.t}`);
+                    currentQ++; 
+                    if(currentQ < questions.length) renderQuestion(); else showResult(); 
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function showResult() {
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const percent = (score / 18) * 100;
+            let res = percent <= 33 ? {t:"Gestão no Escuro", d:"Sua operação precisa de estruturação urgente para não queimar caixa.", f:["Falta de clareza", "Margens invisíveis"]} : (percent <= 66 ? {t:"Em Desenvolvimento", d:"Você já tem bases, mas falta inteligência de dados para escalar.", f:["Otimização necessária", "Retenção abaixo do potencial"]} : {t:"Gestão Avançada", d:"Excelente maturidade. O próximo passo é foco total em escala e ROI.", f:["Operação robusta", "Alta previsibilidade"]});
+            
+            document.getElementById('result-title').innerText = res.t;
+            document.getElementById('result-desc').innerText = res.d;
+            document.getElementById('findings').innerHTML = res.f.map(f => `<div class='text-brand-accent'>✓ ${f}</div>`).join('');
+
+            // Configura o link do WhatsApp com as respostas
+            const answersText = userAnswers.join('\n');
+            const message = `Olá, Lucas! Fiz o diagnóstico no site. Minhas respostas:\n\n${answersText}`;
+            const whatsappLink = `https://wa.me/5531999999999?text=${encodeURIComponent(message)}`;
+            document.getElementById('whatsapp-link').href = whatsappLink;
+        }
+    </script>
+</body>
+</html>
