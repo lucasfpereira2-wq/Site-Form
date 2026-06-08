@@ -36,23 +36,24 @@
     <style>
         body { background-color: #0f111a; color: #f8fafc; font-family: sans-serif; }
     </style>
+
     <!-- Meta Pixel Code -->
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '1797584787882895');
-fbq('track', 'PageView');
-</script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=1797584787882895&ev=PageView&noscript=1"
-/></noscript>
-<!-- End Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1797584787882895');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1797584787882895&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
 </head>
 <body class="min-h-screen flex flex-col items-center">
 
@@ -72,6 +73,7 @@ src="https://www.facebook.com/tr?id=1797584787882895&ev=PageView&noscript=1"
             <p class="text-brand-muted text-lg md:text-xl max-w-lg mx-auto">Responda 6 perguntas estratégicas e descubra o nível de maturidade financeira da sua operação.</p>
             
             <div class="space-y-6 pt-4">
+                <!-- EVENTO 1: Lead — disparado ao iniciar o quiz -->
                 <button onclick="startQuiz()" class="btn-float inline-block bg-brand-primary hover:bg-blue-600 text-white px-10 py-5 rounded-xl font-bold text-lg transition-all animate-float shadow-[0_0_20px_rgba(0,102,255,0.4)]">
                     QUERO MEU DIAGNÓSTICO
                 </button>
@@ -98,7 +100,8 @@ src="https://www.facebook.com/tr?id=1797584787882895&ev=PageView&noscript=1"
             <p id="result-desc" class="text-brand-muted"></p>
             <div id="findings" class="space-y-3 py-4"></div>
             <div class="pt-8 border-t border-white/10">
-                <a id="whatsapp-link" href="#" target="_blank" class="block text-center bg-gradient-to-r from-brand-primary to-brand-secondary hover:brightness-110 text-white py-4 rounded-xl font-bold text-lg transition-all shadow-lg">
+                <!-- EVENTO 3: Contact — disparado ao clicar no WhatsApp -->
+                <a id="whatsapp-link" href="#" target="_blank" onclick="fbq('track', 'Contact')" class="block text-center bg-gradient-to-r from-brand-primary to-brand-secondary hover:brightness-110 text-white py-4 rounded-xl font-bold text-lg transition-all shadow-lg">
                     QUERO UMA ANÁLISE ESTRATÉGICA
                 </a>
             </div>
@@ -119,6 +122,9 @@ src="https://www.facebook.com/tr?id=1797584787882895&ev=PageView&noscript=1"
         let userAnswers = [];
 
         function startQuiz() {
+            // EVENTO 1: Lead — usuário iniciou o quiz
+            fbq('track', 'Lead');
+
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('quiz-container').classList.remove('hidden');
             renderQuestion();
@@ -147,14 +153,21 @@ src="https://www.facebook.com/tr?id=1797584787882895&ev=PageView&noscript=1"
         function showResult() {
             document.getElementById('quiz-container').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
+
+            // EVENTO 2: CompleteRegistration — usuário concluiu o quiz
+            fbq('track', 'CompleteRegistration');
+
             const percent = (score / 18) * 100;
-            let res = percent <= 33 ? {t:"Gestão no Escuro", d:"Hoje existem sinais claros de perda de margem, falta de previsibilidade e decisões sendo tomadas sem dados confiáveis.", f:["Baixa previsibilidade financeira", "Lucro abaixo do potencial real"]} : (percent <= 66 ? {t:"Em Desenvolvimento", d:"Você já possui alguns indicadores importantes, mas ainda existem oportunidades claras para aumentar margem, previsibilidade e eficiência operacional.", f:["Otimização necessária", "Retenção abaixo do potencial"]} : {t:"Gestão Avançada", d:"Sua clínica demonstra maturidade de gestão, mas clínicas com esse perfil normalmente conseguem crescer ainda mais quando refinam aquisição, margem e retenção com inteligência de dados.", f:["Operação robusta", "Alta previsibilidade"]});
+            let res = percent <= 33
+                ? {t:"Gestão no Escuro", d:"Hoje existem sinais claros de perda de margem, falta de previsibilidade e decisões sendo tomadas sem dados confiáveis.", f:["Baixa previsibilidade financeira", "Lucro abaixo do potencial real"]}
+                : (percent <= 66
+                    ? {t:"Em Desenvolvimento", d:"Você já possui alguns indicadores importantes, mas ainda existem oportunidades claras para aumentar margem, previsibilidade e eficiência operacional.", f:["Otimização necessária", "Retenção abaixo do potencial"]}
+                    : {t:"Gestão Avançada", d:"Sua clínica demonstra maturidade de gestão, mas clínicas com esse perfil normalmente conseguem crescer ainda mais quando refinam aquisição, margem e retenção com inteligência de dados.", f:["Operação robusta", "Alta previsibilidade"]});
             
             document.getElementById('result-title').innerText = res.t;
             document.getElementById('result-desc').innerText = res.d;
             document.getElementById('findings').innerHTML = res.f.map(f => `<div class='text-brand-accent'>✓ ${f}</div>`).join('');
 
-            // Configura o link do WhatsApp com as respostas
             const answersText = userAnswers.join('\n');
             const message = `Olá, Lucas! Fiz o diagnóstico no site. Minhas respostas:\n\n${answersText}`;
             const whatsappLink = `https://wa.me/5531999876954?text=${encodeURIComponent(message)}`;
